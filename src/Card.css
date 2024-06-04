@@ -1,0 +1,11 @@
+.Card {
+  margin-top: 80px;
+}
+
+.Card > img {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  /*transform: rotate(45deg);*/
+}
