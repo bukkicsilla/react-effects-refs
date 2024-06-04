@@ -4,10 +4,7 @@ body {
   font-family: "Roboto", sans-serif;
 }
 .CardContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 20px;
+  margin-top: 100px;
 }
 .CardContainer-btn {
   padding: 15px;
