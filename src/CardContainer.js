@@ -40,10 +40,21 @@ const CardContainer = () => {
       console.log("Error", e);
     }
   }
+  async function shuffle() {
+    try {
+      await axios.get(`${API_BASE_URL}/${deckId}/shuffle/`);
+      setCards([]);
+    } catch (e) {
+      console.log("Error", e);
+    }
+  }
   return (
     <div className="CardContainer">
       <button className="CardContainer-btn" onClick={draw}>
         Picking a Card
+      </button>
+      <button className="CardContainer-btn" onClick={shuffle}>
+        Shuffle
       </button>
       {cards.map((card, idx) => (
         <Card
