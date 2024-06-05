@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Card from "./Card";
 import axios from "axios";
 import "./CardContainer.css";
@@ -11,6 +11,7 @@ const CardContainer = () => {
   const [cards, setCards] = useState([]);
   const [angles, setAngles] = useState([]);
   const DEG_CHANGE = 42;
+  const cardsRef = useRef(null);
 
   useEffect(() => {
     async function getDeck() {
@@ -26,15 +27,22 @@ const CardContainer = () => {
       }
     }
     getDeck();
+    return () => {
+      clearInterval(cardsRef.current);
+      cardsRef.current = null;
+    };
   }, []);
 
   async function draw() {
     try {
+      console.log("drawing a card");
       const res = await axios.get(`${API_BASE_URL}/${deckId}/draw/`);
       if (res.data.success) {
         setCards((cards) => [...cards, res.data.cards[0]]);
       } else {
         console.log("No more cards");
+        clearInterval(cardsRef.current);
+        cardsRef.current = null;
       }
     } catch (e) {
       console.log("Error", e);
@@ -42,12 +50,28 @@ const CardContainer = () => {
   }
   async function shuffle() {
     try {
+      clearInterval(cardsRef.current);
+      cardsRef.current = null;
       await axios.get(`${API_BASE_URL}/${deckId}/shuffle/`);
       setCards([]);
     } catch (e) {
       console.log("Error", e);
     }
   }
+  async function getCards() {
+    try {
+      console.log("deckId", deckId);
+      console.log("get cards");
+      await axios.get(`${API_BASE_URL}/${deckId}/shuffle/`);
+      setCards([]);
+      cardsRef.current = setInterval(() => {
+        draw();
+      }, 1000);
+    } catch (e) {
+      console.log("Error", e);
+    }
+  }
+
   return (
     <div className="CardContainer">
       <button className="CardContainer-btn" onClick={draw}>
@@ -55,6 +79,9 @@ const CardContainer = () => {
       </button>
       <button className="CardContainer-btn" onClick={shuffle}>
         Shuffle
+      </button>
+      <button className="CardContainer-btn" onClick={getCards}>
+        Get Cards
       </button>
       {cards.map((card, idx) => (
         <Card
