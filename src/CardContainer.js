@@ -35,7 +35,6 @@ const CardContainer = () => {
 
   async function draw() {
     try {
-      console.log("drawing a card");
       const res = await axios.get(`${API_BASE_URL}/${deckId}/draw/`);
       if (res.data.success) {
         setCards((cards) => [...cards, res.data.cards[0]]);
@@ -60,13 +59,11 @@ const CardContainer = () => {
   }
   async function getCards() {
     try {
-      console.log("deckId", deckId);
-      console.log("get cards");
       await axios.get(`${API_BASE_URL}/${deckId}/shuffle/`);
-      setCards([]);
+      //setCards([]);
       cardsRef.current = setInterval(() => {
         draw();
-      }, 1000);
+      }, 800);
     } catch (e) {
       console.log("Error", e);
     }
